@@ -4,6 +4,7 @@ This project tries to train a bot that can play World of Warcraft; for example: 
 ## Collecting Data
 The training data is collected from real-time playing: Screen shot + Button pressed.
 The pressed button will be the label of that screen shot. 
+See ```db_handler``` for more detail.
 
 ## Training
 Using Pytorch to design a network. See ```Learning_Model``` for more detail. 
