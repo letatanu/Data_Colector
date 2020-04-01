@@ -70,7 +70,7 @@ class SimpleNet(nn.Module):
         return output
 
 
-# Define transformations for the training set, flip the images randomly, crop out and apply mean and std normalization
+# Define transformations for the set_1 set, flip the images randomly, crop out and apply mean and std normalization
 train_transformations = transforms.Compose([
     transforms.RandomHorizontalFlip(),
     transforms.RandomCrop(32, padding=4),
@@ -80,10 +80,10 @@ train_transformations = transforms.Compose([
 
 batch_size = 32
 
-# Load the training set
+# Load the set_1 set
 train_set = CIFAR10(root="./data", train=True, transform=train_transformations, download=True)
 
-# Create a loder for the training set
+# Create a loder for the set_1 set
 train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=4)
 
 # Define transformations for the test set
@@ -193,7 +193,7 @@ def train(num_epochs):
         # Call the learning rate adjustment function
         adjust_learning_rate(epoch)
 
-        # Compute the average acc and loss over all 50000 training images
+        # Compute the average acc and loss over all 50000 set_1 images
         train_acc = train_acc / 50000
         train_loss = train_loss / 50000
 

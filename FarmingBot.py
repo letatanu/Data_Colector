@@ -20,29 +20,27 @@ key_dict = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', ';', '\'
 width_screen, height_screen = pyautogui.size()
 desired_window_name = "World of Warcraft"
 def convertToAction(number):
+    print(number)
     number = 0 if number < 0 else math.floor(number)
-    mouseClickY = math.floor(number /10000)
-    number = number%10000
-    mouseClickX = math.floor(number/100)
-    number = number%100
     keyboard = key_dict[number%len(key_dict)]
-    return keyboard, (mouseClickX, mouseClickY)
+    return keyboard
 
 def screen_capture(width, height):
-    left = int((width_screen - width) / 2)
-    top = int((height_screen - height - off_height) / 2)
+    left = 760
+    top = 1300
     # monitor = {"top": top, "left": left, "width": width, "height": height}
-    monitor =(left, top , width, height)
+    monitor = {left, top, 1416 - left, 1418 - top}
     # grab the data:
     # image capture
     with pyautogui.screenshot(region=monitor) as sct:
         img = np.array(sct)[:,:,:3]
-        # cv2.imwrite("./Data/testing/img.png", img)
         scale_percent = 60  # percent of original size
         width = int(img.shape[1] * scale_percent / 100)
         height = int(img.shape[0] * scale_percent / 100)
         dim = (width, height)
         resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+        resized = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
+        cv2.imwrite("./Data/testing/imgTest.jpg", resized)
         image = np.array(resized, dtype=np.float) / 255.0
         image = image.transpose((2, 0, 1))
         return image
@@ -55,21 +53,20 @@ def runModel():
     model.load_state_dict(torch.load("./model_test1"))
     model.eval()
     while (processing):
-        time.sleep(1)
-        if (GetWindowText(GetForegroundWindow())) == desired_window_name:
+        time.sleep(0.5)
+        if (GetWindowText(GetForegroundWindow())) == desired_window_name or desired_window_name == "":
             img = screen_capture(width_screenShot, height_screenShot)
             input = torch.from_numpy(img).unsqueeze(0).to(device, dtype=torch.float)
             output = (model(input).data).cpu().numpy()
-            keyboard, (mouseClickX, mouseClickY) = convertToAction(output.flat[0])
-            print(keyboard, mouseClickX, mouseClickY)
+            keyboard= convertToAction(output.flat[0])
+            print(keyboard)
             pyautogui.press(keyboard)
-            if mouseClickX > 20 or  mouseClickY > 20:
-                pyautogui.click(mouseClickX*100/width_screen, mouseClickY*100/height_screen)
+
 
 
 def onPress(key):
     global processing, isListening
-    if key == Key.enter:
+    if key == Key.space:
         processing = not processing
     elif key == Key.esc:
         isListening = False

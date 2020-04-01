@@ -11,7 +11,7 @@ class LinearRegression(nn.Module):
     def forward(self, x):
         return self.linear(x)
 
-# create dummy data for training
+# create dummy data for set_1
 x_values = [i for i in range(11)]
 x_train = np.array(x_values, dtype=np.float32)
 x_train = x_train.reshape(-1, 1)
